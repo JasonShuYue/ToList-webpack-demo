@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
+import TodoInput from './TodoInput';
+import TodoItem from './TodoItem';
+
 import './App.css';
 
 class App extends Component {
@@ -8,23 +11,20 @@ class App extends Component {
     this.state = {
       newTodo: 'test',
       todoList: [
-        {id: 1, content: '第一个待办'}
+        {id: 1, content: '第一个待办'},
+        {id: 2, content: '第二个待办'}
       ]
     };
   }
 
-  onChange(event) {
-    this.setState({
-      ...this.state,
-      newTodo: event.target.value
-    });
-  }
 
   render() {
     let { todoList, newTodo } = this.state;
     let todos = todoList.map((item, index) => {
       return (
-          <li key={index}>{item.content}</li>
+          <li key={index}>
+            <TodoItem todoItem={item.content} />
+          </li>
       );
     });
 
@@ -32,7 +32,7 @@ class App extends Component {
       <div className="App">
         <h1>我的待办</h1>
         <div className="input-wrapper">
-          <input type="text" value={newTodo} onChange={this.onChange.bind(this)}/>
+          <TodoInput newTodo={newTodo} />
         </div>
         <ol className="todoList-wrapper">
           {todos}
