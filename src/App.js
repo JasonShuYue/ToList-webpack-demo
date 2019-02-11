@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import 'normalize.css';
 
-import TodoInput from './TodoInput';
-import TodoItem from './TodoItem';
+import TodoInput from './TodoInput/TodoInput';
+import TodoItem from './TodoItem/TodoItem';
+import * as localStore from './localStore'
 
 import './App.css';
 import './reset.css';
@@ -12,14 +13,7 @@ class App extends Component {
         super(props);
         this.state = {
             newTodo: '',
-            todoList: [
-                {
-                    id: 1,
-                    content: "content1",
-                    status: null,
-                    deleted: false
-                }
-            ]
+            todoList: localStore.load('todoList') || []
         };
     }
 
@@ -37,6 +31,7 @@ class App extends Component {
             newTodo: '',
             todoList: todoList
         });
+        localStore.save('todoList', this.state.todoList)
     }
 
     changeContent(content) {
@@ -46,16 +41,19 @@ class App extends Component {
                 newTodo: content
             }
         );
+        localStore.save('todoList', this.state.todoList)
     }
 
     toggle(e, todo) {
         todo.status = todo.status === 'completed' ? '' : 'completed';
         this.setState(this.state);
+        localStore.save('todoList', this.state.todoList)
     }
 
     delete(event, todo) {
         todo.deleted = true;
-        this.setState(this.state)
+        this.setState(this.state);
+        localStore.save('todoList', this.state.todoList);
     }
 
 
