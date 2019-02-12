@@ -3,8 +3,7 @@ import 'normalize.css';
 
 import TodoInput from './TodoInput/TodoInput';
 import TodoItem from './TodoItem/TodoItem';
-import * as localStore from './localStore';
-import initailAV from './initial/AV';
+import {getCurrentUser, signOut} from './initial/leanCloud';
 import UserDialog from './UserDialog/UserDialog';
 
 import './App.css';
@@ -14,6 +13,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            user: getCurrentUser() || {},
             newTodo: '',
             todoList: []
         };
@@ -35,6 +35,7 @@ class App extends Component {
         });
     }
 
+    // 改变新建Todo内容
     changeContent(content) {
         this.setState(
             {
@@ -44,14 +45,36 @@ class App extends Component {
         );
     }
 
+    // 改变todo状态
     toggle(e, todo) {
         todo.status = todo.status === 'completed' ? '' : 'completed';
         this.setState(this.state);
     }
 
+    // 删除todo
     delete(event, todo) {
         todo.deleted = true;
         this.setState(this.state);
+    }
+
+    // 注册/登录操作
+    onSignUpOrIn(user) {
+        console.log('执行了onSignUpOrIn')
+        this.setState({
+            ...this.state,
+            user
+        });
+    }
+
+
+    // 登出操作
+    signOut() {
+        signOut();
+        this.setState({
+            ...this.state,
+            user: {}
+        });
+
     }
 
     componentDidMount() {
@@ -60,7 +83,7 @@ class App extends Component {
 
 
     render() {
-        let {todoList, newTodo} = this.state;
+        let { user, todoList, newTodo} = this.state;
         let todos = todoList.filter((item) => !item.deleted)
                             .map((item, index) => {
             return (
@@ -75,7 +98,8 @@ class App extends Component {
 
         return (
             <div className="App">
-                <h1>我的待办</h1>
+                <h1>{user.id ? user.username : '我'}的待办</h1>
+                {user.id ? <button onClick={this.signOut.bind(this)}>登出</button> : null}
                 <div className="input-wrapper">
                     <TodoInput newTodo={newTodo}
                                onSubmit={this.addTodo.bind(this)}
@@ -85,7 +109,11 @@ class App extends Component {
                 <ol className="todoList">
                     {todos}
                 </ol>
-                <UserDialog />
+                {
+                    user.id ? null : <UserDialog onSignUp={this.onSignUpOrIn.bind(this)}
+                                                 onSignIn={this.onSignUpOrIn.bind(this)}/>
+                }
+
             </div>
         );
     }
