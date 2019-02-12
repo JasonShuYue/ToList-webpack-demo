@@ -12,7 +12,7 @@ AV.init({
 
 export default AV;
 
-export function signUp(userName, passWord, successFn, errorFn) {
+export function signUp(email, userName, passWord, successFn, errorFn) {
     // 新建AVUser实例
     let user = new AV.User();
 
@@ -23,6 +23,8 @@ export function signUp(userName, passWord, successFn, errorFn) {
     user.setPassword(passWord);
 
     // 设置邮箱
+    user.setEmail(email);
+
     user.signUp().then(function (loginedUser) {
         let user = getUserFromAVUser(loginedUser)
         successFn.call(null, user)
@@ -57,10 +59,12 @@ export function signOut() {
 }
 
 export function signIn(username, password, successFn, errorFn) {
+    console.log(2)
     AV.User.logIn(username, password).then(function (loggedInUser) {
+        console.log(3)
         let user = getUserFromAVUser(loggedInUser);
         successFn.call(null, user);
     }, function (error) {
-
+        errorFn.call(null, error)
     });
 }

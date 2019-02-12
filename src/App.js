@@ -59,7 +59,6 @@ class App extends Component {
 
     // 注册/登录操作
     onSignUpOrIn(user) {
-        console.log('执行了onSignUpOrIn')
         this.setState({
             ...this.state,
             user
@@ -78,7 +77,6 @@ class App extends Component {
     }
 
     componentDidMount() {
-        // initailAV();
     }
 
 

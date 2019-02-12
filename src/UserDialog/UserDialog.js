@@ -13,6 +13,7 @@ class UserDialog extends Component {
                 password: '',
                 email: ''
             },
+            error: ""
         };
     }
 
@@ -25,14 +26,13 @@ class UserDialog extends Component {
         });
     }
 
+    // 注册/登录操作
     signUpOrIn(e) {
         e.preventDefault();
         let { onSignUp, onSignIn } = this.props;
 
-        let { formData: {username, password}, selected} = this.state;
-        console.log(123)
+        let { formData: {email, username, password}, selected} = this.state;
         let success = (user)=>{
-            console.log(222, selected)
             if(selected === "signUp") {
                 onSignUp.call(null, user);
             }
@@ -41,10 +41,36 @@ class UserDialog extends Component {
             }
         }
         let error = (error)=>{
-            console.log(error)
+            let temp = '';
+            switch(error.code) {
+                case 125:
+                    temp = "电子邮箱地址无效";
+                    break;
+                case 200:
+                    temp = "用户名或者用户名为空";
+                    break;
+                case 201:
+                    temp = "请填写密码";
+                    break;
+                case 202:
+                    temp = "用户名已经被占用";
+                    break;
+                case 210:
+                    temp = "用户名和密码不匹配";
+                    break;
+                case 219:
+                    temp = "登录失败次数超过限制，请稍候再试，或者通过忘记密码重设密码";
+                    break;
+                default:
+                    temp = error.rawMessage;
+            };
+            this.setState({
+                ...this.state,
+                error: temp
+            });
         }
         if(selected === "signUp") {
-            signUp(username, password, success, error)
+            signUp(email, username, password, success, error)
         }
         if(selected === "signIn") {
             signIn(username, password, success, error)
@@ -54,29 +80,15 @@ class UserDialog extends Component {
 
     changeFormDate(value, type) {
         let { formData } = this.state;
-
-        if(type === "username") {
-            Object.assign(formData, {
-                username: value
-            });
-            this.setState({
-                ...this.state,
-                formData
-            });
-        }
-        if(type === "password") {
-            Object.assign(formData, {
-                password: value
-            });
-            this.setState({
-                ...this.state,
-                formData
-            });
-        }
+        formData[type] = value;
+        this.setState({
+            ...this.state,
+            formData
+        });
     }
 
     render(){
-        let { selected } = this.state;
+        let { selected, error} = this.state;
         return (
             <div className="UserDialog-Wrapper">
                 <div className="UserDialog">
@@ -89,16 +101,28 @@ class UserDialog extends Component {
                         </label>
                     </nav>
                     <form className="form" onSubmit={(e) => this.signUpOrIn(e)} >
+                        {
+                            selected === "signUp" &&
+                            <div className="row">
+                                <label><span className="title">Email：</span><input type="text" onChange={(event) => this.changeFormDate(event.target.value, 'email')}/></label>
+                            </div>
+                        }
                         <div className="row">
                             <label><span className="title">用户名：</span><input type="text" onChange={(event) => this.changeFormDate(event.target.value, 'username')}/></label>
                         </div>
                         <div className="row">
                             <label><span className="title">密码：</span><input type="password" onChange={(event) => this.changeFormDate(event.target.value, 'password')} /></label>
                         </div>
+                        {
+                            error && <p className="error">{error}</p>
+                        }
                         <div className="row">
-                            <button type="submit">
+                            <button type="submit" className="submit">
                                 {selected === "signUp" ? '注册' : '登录'}
                             </button>
+                            {
+                                selected === "signIn" && <a href="javascript:;">忘记密码了？</a>
+                            }
                         </div>
                     </form>
                 </div>
