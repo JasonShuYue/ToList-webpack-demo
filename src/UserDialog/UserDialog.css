@@ -1,0 +1,49 @@
+.UserDialog-Wrapper{
+    /*全屏覆盖*/
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .3);
+    /*内容居中*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.UserDialog-Wrapper .UserDialog {
+    min-width: 40%;
+    min-height: 35%;
+    background: white;
+    border-radius: 5%;
+    box-shadow: 0 0 1em rgba(0, 0, 0, .5);
+
+}
+
+.UserDialog-Wrapper .UserDialog .nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.UserDialog-Wrapper .UserDialog .form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+    flex-wrap: wrap;
+}
+
+.UserDialog-Wrapper .UserDialog .form .row {
+    width: 100%;
+    text-align: center;
+}
+
+.UserDialog-Wrapper .UserDialog .form .row .title {
+    min-width: 4em;
+    display: inline-block;
+    text-align: right;
+}

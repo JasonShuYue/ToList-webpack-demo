@@ -3,7 +3,9 @@ import 'normalize.css';
 
 import TodoInput from './TodoInput/TodoInput';
 import TodoItem from './TodoItem/TodoItem';
-import * as localStore from './localStore'
+import * as localStore from './localStore';
+import initailAV from './initial/AV';
+import UserDialog from './UserDialog/UserDialog';
 
 import './App.css';
 import './reset.css';
@@ -13,7 +15,7 @@ class App extends Component {
         super(props);
         this.state = {
             newTodo: '',
-            todoList: localStore.load('todoList') || []
+            todoList: []
         };
     }
 
@@ -31,7 +33,6 @@ class App extends Component {
             newTodo: '',
             todoList: todoList
         });
-        localStore.save('todoList', this.state.todoList)
     }
 
     changeContent(content) {
@@ -41,19 +42,20 @@ class App extends Component {
                 newTodo: content
             }
         );
-        localStore.save('todoList', this.state.todoList)
     }
 
     toggle(e, todo) {
         todo.status = todo.status === 'completed' ? '' : 'completed';
         this.setState(this.state);
-        localStore.save('todoList', this.state.todoList)
     }
 
     delete(event, todo) {
         todo.deleted = true;
         this.setState(this.state);
-        localStore.save('todoList', this.state.todoList);
+    }
+
+    componentDidMount() {
+        // initailAV();
     }
 
 
@@ -83,6 +85,7 @@ class App extends Component {
                 <ol className="todoList">
                     {todos}
                 </ol>
+                <UserDialog />
             </div>
         );
     }
